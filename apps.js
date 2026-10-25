@@ -8,13 +8,57 @@
    - pin  : 관리자 암호 (화면에서 가려 두는 정도의 가벼운 잠금입니다)
    ========================================================== */
 window.SITE_DATA = {
-  "updated": "2026-10-25T00:00:00.000Z",
+  "updated": "2026-10-25T12:33:32.000Z",
   "pin": "4021",
   "apps": [
-    { "id": "app1", "name": "웹앱 1", "icon": "🌼", "desc": "곧 소개가 채워질 자리예요.", "url": "" },
-    { "id": "app2", "name": "웹앱 2", "icon": "🌷", "desc": "곧 소개가 채워질 자리예요.", "url": "" },
-    { "id": "app3", "name": "웹앱 3", "icon": "🌻", "desc": "곧 소개가 채워질 자리예요.", "url": "" },
-    { "id": "app4", "name": "웹앱 4", "icon": "🍀", "desc": "곧 소개가 채워질 자리예요.", "url": "" },
-    { "id": "app5", "name": "웹앱 5", "icon": "🌳", "desc": "곧 소개가 채워질 자리예요.", "url": "" }
+    {
+      "id": "chatbot",
+      "name": "마음 해결사 챗봇",
+      "icon": "💛",
+      "desc": "화난 친구 역할을 하는 챗봇과 인정·사과·약속, 세 걸음으로 사과하는 말을 연습해요.",
+      "url": "apps/3-1-chatbot.html"
+    },
+    {
+      "id": "weather",
+      "name": "우리 반 감정 날씨",
+      "icon": "☁️",
+      "desc": "아침마다 기분과 힘을 골라 내 마음 날씨를 남기고, 우리 반 마음 하늘을 함께 봐요.",
+      "url": "apps/3-2-emotion-weather.html"
+    },
+    {
+      "id": "praise-tree",
+      "name": "칭찬 씨앗 나무",
+      "icon": "🌳",
+      "desc": "나의 강점을 고르고 친구에게 칭찬 씨앗을 선물하며 우리 반 나무를 함께 키워요.",
+      "url": "apps/4-1-praise-tree.html"
+    },
+    {
+      "id": "thermometer",
+      "name": "말의 온도계",
+      "icon": "🌡️",
+      "desc": "차가운 말 대신 따뜻한 말을 고를 때마다 우리 반 온도가 올라가요.",
+      "url": "apps/4-2-word-thermometer.html"
+    },
+    {
+      "id": "firstaid",
+      "name": "마음 구급상자",
+      "icon": "🩹",
+      "desc": "지금 내 마음을 하트로 살펴보고, 숨 쉬기·토닥토닥 같은 마음 처방으로 나를 돌봐요.",
+      "url": "apps/4-3-heart-firstaid.html"
+    },
+    {
+      "id": "namu",
+      "name": "나무 길 보드게임",
+      "icon": "🎲",
+      "desc": "모둠 태블릿으로 주사위를 굴리며 마음 미션을 해내면, 우리 반 나무에 잎이 자라요.",
+      "url": "https://kalapui.com/namu/"
+    },
+    {
+      "id": "manual",
+      "name": "사용 매뉴얼",
+      "icon": "📘",
+      "desc": "다섯 앱의 수업 흐름과 선생님 기능, 주의할 점을 한눈에 정리했어요.",
+      "url": "apps/0-manual.html"
+    }
   ]
 };
