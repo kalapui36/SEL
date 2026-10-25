@@ -37,7 +37,8 @@
 
   <footer class="footer"></footer>
 
-  <script src="apps.js"></script>
+  <!-- apps.js는 저장할 때마다 바뀌므로 브라우저에 오래 남지 않게 매번 새로 받기 -->
+  <script>document.write('<script src="apps.js?v=' + Date.now() + '"><\/script>');</script>
   <script src="store.js"></script>
   <script src="pin.js"></script>
   <script src="script.js"></script>

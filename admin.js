@@ -7,11 +7,44 @@
 
   let data = Store.load();
 
+  /* 사이트(GitHub)에 저장된 상태와 비교해서 '저장 전' 여부를 표시 */
+  const sig = (d) => JSON.stringify({ pin: d.pin, apps: d.apps });
+  const fileSig = sig(window.SITE_DATA);
+  const SYNC_KEY = "sel-garden-synced";
+  const lastSynced = () => { try { return localStorage.getItem(SYNC_KEY) || fileSig; } catch { return fileSig; } };
+  let synced = lastSynced();
+  const dirty = () => sig(data) !== synced;
+  function markSynced(d) {
+    synced = sig(d);
+    try { localStorage.setItem(SYNC_KEY, synced); } catch {}
+  }
+
   /* ---------- 들어오기 ---------- */
-  function enter() {
+  async function enter() {
     $("admin").hidden = false;
     $("bar").hidden = false;
     render();
+    refreshGitHub();
+    if (GitHub.hasToken()) await pullLatest();
+    updateStatus();
+  }
+
+  /* 다른 기기에서 저장한 최신본이 있으면 가져오기 */
+  async function pullLatest() {
+    try {
+      $("status").textContent = "사이트 최신 내용 확인 중…";
+      const remote = (await GitHub.load()).data;
+      const editedHere = sig(data) !== lastSynced();
+      markSynced(remote);
+      if (sig(remote) !== sig(data) &&
+          (!editedHere || confirm("사이트에 더 최신 내용이 있어요. 불러올까요?\n(취소하면 이 기기에서 고친 내용을 그대로 둡니다)"))) {
+        data = remote;
+        Store.save(data);
+        render();
+      }
+    } catch (e) {
+      $("ghMsg").textContent = "⚠️ " + e.message;
+    }
   }
   $("logout").addEventListener("click", () => {
     try { sessionStorage.removeItem("sel-admin-ok"); } catch {}
@@ -25,10 +58,20 @@
     $("status").textContent = "저장 중…";
     $("status").classList.remove("warn");
     saveTimer = setTimeout(() => {
-      const ok = Store.save(data);
-      $("status").textContent = ok ? "이 기기에 저장됨 ✓" : "저장 실패 — 사진 용량이 너무 커요";
-      $("status").classList.toggle("warn", !ok);
+      if (Store.save(data)) updateStatus();
+      else {
+        $("status").textContent = "저장 실패 — 사진 용량이 너무 커요";
+        $("status").classList.add("warn");
+      }
     }, 300);
+  }
+
+  function updateStatus(text) {
+    const d = dirty();
+    $("status").textContent = text || (d
+      ? (GitHub.hasToken() ? "✏️ 고친 내용이 있어요 — '사이트에 저장'을 눌러 주세요" : "✏️ 이 기기에만 저장됨")
+      : "사이트와 같아요 ✓");
+    $("status").classList.toggle("warn", d && !text);
   }
 
   /* ---------- 목록 그리기 ---------- */
@@ -195,18 +238,104 @@
     }
     data.pin = v;
     $("newPin").value = "";
-    $("pinMsg").textContent = "바뀌었어요. 다른 기기에도 쓰려면 배포 파일에 함께 담겨요.";
+    $("pinMsg").textContent = "바뀌었어요. '사이트에 저장'을 눌러야 모든 기기에 적용돼요.";
     save();
   });
 
-  /* ---------- 하단 버튼 ---------- */
-  $("export").addEventListener("click", () => Store.exportFile(data));
-  $("reset").addEventListener("click", () => {
-    if (confirm("이 기기에서 고친 내용을 모두 버리고 저장소의 apps.js 상태로 돌아갈까요?")) {
-      data = Store.reset();
-      render();
-      $("status").textContent = "처음 상태로 돌아갔어요";
+  /* ---------- GitHub 연결 ---------- */
+  function refreshGitHub() {
+    const c = GitHub.config();
+    const on = GitHub.hasToken();
+    $("ghState").textContent = on ? `✅ 연결됨 · ${c.owner}/${c.repo} (${c.branch})` : "⚪ 아직 연결 안 됨";
+    $("ghState").classList.toggle("ok", on);
+    $("ghToken").value = "";
+    $("ghToken").placeholder = on ? "토큰 저장됨 (바꾸려면 새 토큰 입력)" : "github_pat_로 시작하는 긴 글자";
+    $("ghOwner").value = c.owner;
+    $("ghRepo").value = c.repo;
+    $("ghBranch").value = c.branch;
+    $("ghForget").hidden = !on;
+    $("notice").innerHTML = on
+      ? "<strong>🌐 GitHub에 연결되어 있어요.</strong>고친 뒤 맨 아래 <b>사이트에 저장</b>을 누르면 1~2분 뒤 모든 기기의 대문에 반영돼요. 누르기 전까지는 이 기기에만 저장돼요."
+      : "<strong>💾 지금은 이 기기에만 저장돼요.</strong>맨 아래 <b>GitHub 연결</b>을 한 번 해 두면, <b>사이트에 저장</b> 버튼으로 모든 기기에 바로 반영할 수 있어요.";
+  }
+
+  $("ghConnect").addEventListener("click", async () => {
+    const prev = GitHub.config();
+    const token = $("ghToken").value.trim() || prev.token;
+    if (!token) { $("ghMsg").textContent = "토큰을 붙여 넣어 주세요."; return; }
+    GitHub.setConfig({
+      token,
+      owner: $("ghOwner").value.trim() || prev.owner,
+      repo: $("ghRepo").value.trim() || prev.repo,
+      branch: $("ghBranch").value.trim() || prev.branch,
+    });
+    $("ghMsg").textContent = "연결 확인 중…";
+    try {
+      await GitHub.load();
+      $("ghMsg").textContent = "연결됐어요 ✓ 이제 '사이트에 저장'을 쓸 수 있어요.";
+      refreshGitHub();
+      await pullLatest();
+      updateStatus();
+    } catch (e) {
+      GitHub.setConfig(prev);
+      $("ghMsg").textContent = "⚠️ " + e.message;
     }
+  });
+
+  $("ghForget").addEventListener("click", () => {
+    if (!confirm("이 기기에 저장된 토큰을 지울까요?")) return;
+    GitHub.setConfig({ token: "" });
+    $("ghMsg").textContent = "토큰을 지웠어요.";
+    refreshGitHub();
+    updateStatus();
+  });
+
+  /* ---------- 하단 버튼 ---------- */
+  $("publish").addEventListener("click", async () => {
+    if (!GitHub.hasToken()) {
+      alert("먼저 아래 'GitHub 연결'에서 토큰을 넣어 주세요.");
+      $("ghToken").scrollIntoView({ behavior: "smooth", block: "center" });
+      $("ghToken").focus();
+      return;
+    }
+    const btn = $("publish");
+    btn.disabled = true;
+    updateStatus("사이트에 저장 중…");
+    try {
+      data = await GitHub.save(data);
+      Store.save(data);
+      markSynced(data);
+      updateStatus("🌐 사이트에 저장됐어요 ✓ 1~2분 뒤 모든 기기에 보여요");
+    } catch (e) {
+      updateStatus();
+      alert("저장하지 못했어요.\n" + e.message);
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  $("export").addEventListener("click", () => Store.exportFile(data));
+
+  $("reset").addEventListener("click", async () => {
+    if (!confirm("이 기기에서 고친 내용을 버리고 사이트에 저장된 상태로 되돌릴까요?")) return;
+    data = Store.reset();
+    markSynced(data);
+    if (GitHub.hasToken()) {
+      try {
+        const remote = (await GitHub.load()).data;
+        data = remote;
+        markSynced(remote);
+        if (sig(remote) !== fileSig) Store.save(data);
+      } catch (e) {
+        $("ghMsg").textContent = "⚠️ " + e.message;
+      }
+    }
+    render();
+    updateStatus("되돌렸어요");
+  });
+
+  window.addEventListener("beforeunload", (e) => {
+    if (GitHub.hasToken() && dirty()) e.preventDefault();
   });
 
   if (PinGate.isOpen()) enter();

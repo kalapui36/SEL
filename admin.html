@@ -23,12 +23,7 @@
   </header>
 
   <main class="admin-main" id="admin" hidden>
-    <div class="notice">
-      <strong>💾 고친 내용은 이 기기에 바로 저장돼요.</strong>
-      이 기기에서 여는 대문 페이지에도 곧바로 보여요.<br>
-      다른 기기(학생·청중)에도 보이게 하려면 맨 아래 <b>배포 파일 내려받기</b>로 받은
-      <code>apps.js</code>를 저장소에 올려 기존 파일을 바꿔 주세요.
-    </div>
+    <div class="notice" id="notice"></div>
 
     <h2 class="admin-h">전시 중인 웹앱 <small>⠿를 끌거나 ↑↓를 눌러 순서를 바꿔요</small></h2>
     <ol class="rows" id="rows"></ol>
@@ -40,19 +35,57 @@
       <button class="btn-ghost" id="savePin">바꾸기</button>
       <span class="hint" id="pinMsg"></span>
     </div>
+
+    <h2 class="admin-h">GitHub 연결 <small>사이트에 바로 저장하려면 처음 한 번 필요해요</small></h2>
+    <div class="gh">
+      <p class="gh-state" id="ghState"></p>
+      <label class="gh-token">토큰
+        <input id="ghToken" type="password" autocomplete="off" placeholder="github_pat_로 시작하는 긴 글자" />
+      </label>
+      <div class="gh-btns">
+        <button class="btn-main" id="ghConnect">연결하기</button>
+        <button class="btn-ghost" id="ghForget">이 기기에서 토큰 지우기</button>
+      </div>
+      <p class="hint" id="ghMsg" aria-live="polite"></p>
+
+      <details class="gh-help">
+        <summary>토큰은 어떻게 만들어요?</summary>
+        <ol>
+          <li><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub 토큰 만들기 페이지</a>를 열어요. (GitHub 로그인 필요)</li>
+          <li><b>Token name</b>: 아무 이름이나 (예: 마음정원 관리자)</li>
+          <li><b>Expiration</b>: 사용할 기간 (예: 90일 또는 1년)</li>
+          <li><b>Repository access</b>: <b>Only select repositories</b> → <b>SEL</b> 선택</li>
+          <li><b>Permissions → Repositories</b>에서 <b>Add permissions</b> → <b>Contents</b>를 고르고 <b>Read and write</b>로 바꿔요.</li>
+          <li>맨 아래 <b>Generate token</b> → 나온 글자를 복사해서 위 칸에 붙여 넣고 <b>연결하기</b>.</li>
+        </ol>
+        <p>⚠️ 토큰은 비밀번호처럼 다뤄 주세요. 이 기기에만 저장되고, 공용 PC에서 썼다면 <b>토큰 지우기</b>를 눌러 주세요.</p>
+      </details>
+
+      <details class="gh-help">
+        <summary>고급 설정 (저장소·브랜치)</summary>
+        <div class="gh-adv">
+          <label>사용자<input id="ghOwner" /></label>
+          <label>저장소<input id="ghRepo" /></label>
+          <label>브랜치<input id="ghBranch" /></label>
+        </div>
+      </details>
+    </div>
   </main>
 
   <footer class="admin-bar" id="bar" hidden>
     <span class="status" id="status">저장됨 ✓</span>
     <div class="bar-btns">
-      <button class="btn-ghost" id="reset">처음 상태로</button>
-      <button class="btn-main" id="export">배포 파일 내려받기</button>
+      <button class="btn-ghost" id="reset">되돌리기</button>
+      <button class="btn-ghost" id="export">파일 내려받기</button>
+      <button class="btn-main" id="publish">사이트에 저장</button>
     </div>
   </footer>
 
-  <script src="apps.js"></script>
+  <!-- apps.js는 저장할 때마다 바뀌므로 브라우저에 오래 남지 않게 매번 새로 받기 -->
+  <script>document.write('<script src="apps.js?v=' + Date.now() + '"><\/script>');</script>
   <script src="store.js"></script>
   <script src="pin.js"></script>
+  <script src="github.js"></script>
   <script src="admin.js"></script>
 </body>
 </html>

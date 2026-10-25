@@ -137,3 +137,28 @@
   .bar-btns > * { flex: 1; justify-content: center; }
   .emoji-grid { grid-template-columns: repeat(6, 1fr); }
 }
+
+/* ---------- GitHub 연결 ---------- */
+.gh {
+  background: var(--paper); border-radius: 18px; padding: 18px;
+  box-shadow: var(--shadow); display: grid; gap: 10px;
+}
+.gh-state { margin: 0; font-family: "Jua", sans-serif; }
+.gh-state.ok { color: var(--green); }
+.gh-token { display: grid; gap: 2px; font-size: .8rem; color: var(--ink-soft); }
+.gh input {
+  font: inherit; color: var(--ink); font-size: .95rem;
+  border: 1.5px solid var(--line); border-radius: 10px;
+  padding: 7px 10px; outline: none; width: 100%; background: #FFFCF8;
+}
+.gh input:focus { border-color: var(--accent); background: #fff; }
+.gh-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.gh-help { font-size: .92rem; color: var(--ink-soft); }
+.gh-help summary { cursor: pointer; color: var(--ink); }
+.gh-help ol { padding-left: 1.3em; margin: 8px 0; }
+.gh-help li { margin-bottom: 4px; }
+.gh-help a { color: var(--accent); }
+.gh-adv { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
+.gh-adv label { display: grid; gap: 2px; font-size: .8rem; }
+.btn-main:disabled { opacity: .5; cursor: default; }
+@media (max-width: 560px) { .gh-adv { grid-template-columns: 1fr; } }

@@ -38,13 +38,14 @@ const Store = (() => {
     return clone(file);
   }
 
-  function exportFile(data) {
+  /* data → apps.js 파일 내용 */
+  function buildFile(data) {
     const out = { ...data, updated: new Date().toISOString() };
-    const body =
+    const text =
 `/* ==========================================================
    앱 목록 데이터
    - 관리자 페이지(왼쪽 위 🌱 3초 꾹)에서 수정 후
-     "배포 파일 내려받기"로 받은 파일로 이 파일을 교체하면 됩니다.
+     "사이트에 저장"을 누르면 이 파일이 자동으로 바뀝니다.
    - icon : 이모지 한 글자, 또는 이미지(data:image… / 파일 경로)
    - url  : 같은 저장소 apps 폴더에 넣었다면 "apps/파일이름.html"
             다른 곳에 올린 앱이면 "https://…" 전체 주소
@@ -52,8 +53,22 @@ const Store = (() => {
    ========================================================== */
 window.SITE_DATA = ${JSON.stringify(out, null, 2)};
 `;
+    return { text, data: out };
+  }
+
+  /* apps.js 파일 내용 → data */
+  function parseFile(text) {
+    const start = text.indexOf("{", text.indexOf("window.SITE_DATA"));
+    const end = text.lastIndexOf("}");
+    const data = JSON.parse(text.slice(start, end + 1));
+    if (!Array.isArray(data.apps)) throw new Error("apps 목록이 없어요");
+    return data;
+  }
+
+  function exportFile(data) {
+    const { text } = buildFile(data);
     const a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob([body], { type: "text/javascript" }));
+    a.href = URL.createObjectURL(new Blob([text], { type: "text/javascript" }));
     a.download = "apps.js";
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
@@ -77,5 +92,5 @@ window.SITE_DATA = ${JSON.stringify(out, null, 2)};
     return u;
   }
 
-  return { load, save, reset, exportFile, esc, iconHTML, safeUrl };
+  return { load, save, reset, buildFile, parseFile, exportFile, esc, iconHTML, safeUrl };
 })();
