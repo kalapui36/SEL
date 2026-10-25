@@ -1,0 +1,185 @@
+:root {
+  --bg: #FFF8EE;
+  --paper: #FFFFFF;
+  --ink: #4A3F35;
+  --ink-soft: #7A6B5D;
+  --line: #EFE3D3;
+  --sky: #FDE8D7;
+  --accent: #E07A5F;
+  --green: #81B29A;
+  --radius: 22px;
+  --shadow: 0 6px 20px rgba(122, 90, 60, .10);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Gowun Dodum", system-ui, sans-serif;
+  line-height: 1.7;
+  word-break: keep-all;
+}
+h1, h2, h3 { font-family: "Jua", sans-serif; font-weight: 400; margin: 0; }
+a { color: inherit; }
+
+/* ---------- 대문 ---------- */
+.hero {
+  position: relative;
+  background: linear-gradient(180deg, var(--sky) 0%, #FFF1E2 70%, var(--bg) 100%);
+  padding-bottom: 120px;
+  overflow: hidden;
+}
+.hero::before, .hero::after {           /* 몽글몽글 햇살 */
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(2px);
+  opacity: .55;
+}
+.hero::before { width: 220px; height: 220px; background: #FFD6A5; top: 60px; right: 8%; }
+.hero::after  { width: 120px; height: 120px; background: #FFC8C8; top: 260px; left: 6%; }
+
+.nav {
+  position: relative; z-index: 2;
+  display: flex; justify-content: space-between; align-items: center;
+  max-width: 1100px; margin: 0 auto; padding: 20px 16px;
+}
+.nav-logo { font-family: "Jua", sans-serif; font-size: 1.2rem; }
+.nav-links { display: flex; gap: 18px; }
+.nav-links a { text-decoration: none; color: var(--ink-soft); }
+.nav-links a:hover { color: var(--accent); }
+
+.hero-body {
+  position: relative; z-index: 2;
+  text-align: center; padding: 70px 16px 0;
+}
+.hero-hand {
+  font-family: "Nanum Pen Script", cursive;
+  font-size: 1.9rem; color: var(--accent); margin: 0 0 4px;
+}
+.hero h1 { font-size: clamp(2.6rem, 8vw, 4.4rem); line-height: 1.2; }
+.hero-sub { color: var(--ink-soft); font-size: 1.1rem; margin: 14px 0 32px; }
+.btn-main {
+  display: inline-block; text-decoration: none;
+  background: var(--accent); color: #fff;
+  padding: 12px 28px; border-radius: 999px;
+  font-family: "Jua", sans-serif; font-size: 1.1rem;
+  box-shadow: 0 6px 0 #C4614A;
+  transition: transform .15s, box-shadow .15s;
+}
+.btn-main:hover { transform: translateY(2px); box-shadow: 0 4px 0 #C4614A; }
+.hero-hills { position: absolute; left: 0; bottom: 0; width: 100%; height: 160px; }
+
+/* ---------- 섹션 공통 ---------- */
+.section { max-width: 1100px; margin: 0 auto; padding: 64px 16px; }
+.section-title { text-align: center; font-size: clamp(1.7rem, 4.5vw, 2.3rem); }
+.section-lead { text-align: center; color: var(--ink-soft); margin: 10px 0 36px; }
+
+/* ---------- 다섯 가지 마음 ---------- */
+.hearts {
+  display: grid; gap: 14px;
+  grid-template-columns: repeat(5, 1fr);
+}
+.heart {
+  font: inherit; color: inherit; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  background: var(--paper);
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px 8px 18px;
+  box-shadow: var(--shadow);
+  transition: transform .2s, border-color .2s, background .2s;
+}
+.heart:hover { transform: translateY(-4px); border-color: var(--c); }
+.heart.is-active { border-color: var(--c); background: color-mix(in srgb, var(--c) 14%, white); }
+.heart-emoji { font-size: 2.4rem; transition: transform .3s; }
+.heart:hover .heart-emoji, .heart.is-active .heart-emoji { transform: scale(1.15) rotate(-6deg); }
+.heart-label { font-family: "Jua", sans-serif; font-size: 1.15rem; }
+.heart-full { font-size: .85rem; color: var(--ink-soft); }
+
+/* ---------- 앱 카드 ---------- */
+.grid {
+  display: grid; gap: 22px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+.card {
+  position: relative;
+  display: flex; flex-direction: column;
+  text-decoration: none;
+  background: var(--paper);
+  border-radius: var(--radius);
+  padding: 26px 24px 22px;
+  box-shadow: var(--shadow);
+  border-top: 8px solid var(--c);
+  transition: transform .2s, box-shadow .2s;
+  animation: pop .5s both;
+  animation-delay: var(--d);
+}
+.card:hover { transform: translateY(-6px) rotate(-.4deg); box-shadow: 0 14px 30px rgba(122, 90, 60, .16); }
+.card-emoji {
+  display: grid; place-items: center;
+  width: 64px; height: 64px; font-size: 2rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--c) 18%, white);
+  margin-bottom: 14px;
+}
+.card-name { font-size: 1.4rem; }
+.card-desc { margin: 6px 0 14px; color: var(--ink-soft); flex: 1; }
+.card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.tag {
+  font-size: .82rem; padding: 3px 10px; border-radius: 999px;
+  background: color-mix(in srgb, var(--c) 18%, white);
+}
+.card-meta { margin: 0 0 14px; font-size: .88rem; display: grid; gap: 2px; }
+.card-meta div { display: flex; gap: 8px; }
+.card-meta dt { color: var(--ink-soft); min-width: 2.5em; }
+.card-meta dd { margin: 0; }
+.card-open {
+  align-self: flex-end;
+  font-family: "Jua", sans-serif; color: var(--accent);
+  transition: transform .2s;
+}
+.card:hover .card-open { transform: translateX(4px); }
+
+@keyframes pop {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ---------- 우리 이야기 ---------- */
+.timeline { list-style: none; margin: 0 auto; padding: 0; max-width: 720px; position: relative; }
+.timeline::before {
+  content: ""; position: absolute; left: 31px; top: 10px; bottom: 10px;
+  border-left: 3px dashed #D9C7B0;
+}
+.timeline li { position: relative; display: flex; gap: 20px; margin-bottom: 26px; }
+.step-emoji {
+  flex: none; z-index: 1;
+  display: grid; place-items: center;
+  width: 64px; height: 64px; font-size: 1.8rem;
+  background: var(--paper); border: 3px solid var(--green); border-radius: 50%;
+}
+.timeline h3 { font-size: 1.25rem; margin-top: 6px; }
+.timeline p { margin: 4px 0 0; color: var(--ink-soft); }
+
+/* ---------- 푸터 ---------- */
+.footer {
+  text-align: center; padding: 40px 16px 50px;
+  background: #F3E7D6; color: var(--ink-soft);
+}
+.footer p { margin: 0; }
+.footer-small { font-size: .85rem; margin-top: 6px !important; }
+
+/* ---------- 모바일 ---------- */
+@media (max-width: 760px) {
+  .nav-links { display: none; }
+  .hearts { grid-template-columns: repeat(2, 1fr); }
+  .hearts .heart:last-child { grid-column: span 2; }
+  .hero-body { padding-top: 40px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>마음이 자라는 교실</title>
+  <meta name="description" content="AI와 함께하는 사회정서교육 교사학습공동체 웹앱 모음" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&family=Nanum+Pen+Script&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ① 대문 -->
+  <header class="hero">
+    <nav class="nav">
+      <span class="nav-logo">🌱 마음이 자라는 교실</span>
+      <div class="nav-links">
+        <a href="#garden">마음 정원</a>
+        <a href="#apps">웹앱</a>
+        <a href="#story">우리 이야기</a>
+      </div>
+    </nav>
+
+    <div class="hero-body">
+      <p class="hero-hand">AI와 함께 키우는 다섯 가지 마음</p>
+      <h1>마음이 자라는 교실</h1>
+      <p class="hero-sub">
+        <!-- ✏️ 학교 이름·교학공 이름으로 바꿔 주세요 -->
+        ○○초등학교 사회정서교육 교사학습공동체
+      </p>
+      <a class="btn-main" href="#apps">앱 둘러보기 ↓</a>
+    </div>
+
+    <svg class="hero-hills" viewBox="0 0 1440 160" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0,96 C240,40 420,140 720,90 C1020,40 1200,120 1440,70 L1440,160 L0,160 Z" fill="#CFE3C0"/>
+      <path d="M0,130 C300,90 520,160 820,120 C1100,85 1260,140 1440,115 L1440,160 L0,160 Z" fill="#FFF8EE"/>
+    </svg>
+  </header>
+
+  <main>
+    <!-- ② 다섯 가지 마음 (필터 겸용) -->
+    <section id="garden" class="section">
+      <h2 class="section-title">우리가 키우는 다섯 가지 마음</h2>
+      <p class="section-lead">사회정서학습(SEL)의 5가지 핵심 역량을 아이들 말로 바꿔 보았어요.<br>꽃을 누르면 그 마음을 키우는 앱만 모아 볼 수 있어요.</p>
+      <div class="hearts" id="hearts"></div>
+    </section>
+
+    <!-- ③ 웹앱 카드 -->
+    <section id="apps" class="section">
+      <h2 class="section-title">마음 정원의 웹앱들</h2>
+      <p class="section-lead" id="filter-label">선생님들이 바이브코딩으로 직접 만든 앱이에요. 카드를 누르면 새 창으로 열려요.</p>
+      <div class="grid" id="grid"></div>
+    </section>
+
+    <!-- ④ 우리 이야기 (사례 발표용) -->
+    <section id="story" class="section">
+      <h2 class="section-title">우리 이야기</h2>
+      <p class="section-lead">교사학습공동체가 걸어온 길이에요.</p>
+      <!-- ✏️ 실제 운영 내용으로 바꿔 주세요 -->
+      <ol class="timeline">
+        <li>
+          <span class="step-emoji">🤔</span>
+          <div>
+            <h3>씨앗 · 고민에서 시작했어요</h3>
+            <p>아이들이 자기 감정을 말로 표현하기 어려워하고, 작은 갈등이 크게 번지는 모습을 보며 함께 모였어요.</p>
+          </div>
+        </li>
+        <li>
+          <span class="step-emoji">🛠️</span>
+          <div>
+            <h3>새싹 · 직접 만들어 봤어요</h3>
+            <p>코딩을 몰라도 AI에게 말로 설명하며(바이브코딩) 우리 반에 꼭 맞는 도구를 만들었어요.</p>
+          </div>
+        </li>
+        <li>
+          <span class="step-emoji">🏫</span>
+          <div>
+            <h3>꽃 · 교실에서 써 봤어요</h3>
+            <p>아침 활동, 도덕, 창체, 갈등 상황 등 실제 수업 장면에 적용하고 서로 수업을 나눴어요.</p>
+          </div>
+        </li>
+        <li>
+          <span class="step-emoji">🌳</span>
+          <div>
+            <h3>열매 · 돌아보고 나눠요</h3>
+            <p>학생 반응과 교사 성찰을 바탕으로 앱을 고치고, 다른 선생님들과 나누려 해요.</p>
+          </div>
+        </li>
+      </ol>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <!-- ✏️ 참여 선생님 이름 등 -->
+    <p>🌱 2026 ○○초등학교 사회정서교육 교사학습공동체</p>
+    <p class="footer-small">모든 앱은 수업용으로 제작되었으며, 학생 개인정보를 저장하지 않도록 만들었습니다.</p>
+  </footer>
+
+  <script src="apps.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
