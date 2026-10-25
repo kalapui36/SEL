@@ -1,65 +1,49 @@
 (() => {
-  const heartsEl = document.getElementById("hearts");
+  const COLORS = ["#F4A261", "#E9C46A", "#E76F51", "#D88C9A", "#8AB17D", "#7FB7BE"];
+  const { esc, iconHTML, safeUrl } = Store;
+
+  /* ---------- 앱 카드 ---------- */
   const gridEl = document.getElementById("grid");
-  const labelEl = document.getElementById("filter-label");
-  const defaultLabel = labelEl.textContent;
-  let active = null;
+  const { apps } = Store.load();
 
-  const esc = (s) =>
-    String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  gridEl.innerHTML = apps
+    .map((a, i) => {
+      const url = safeUrl(a.url);
+      const style = `--c:${COLORS[i % COLORS.length]}; --d:${i * 60}ms`;
+      const inner = `
+        <span class="card-emoji">${iconHTML(a.icon)}</span>
+        <h3 class="card-name">${esc(a.name)}</h3>
+        <p class="card-desc">${esc(a.desc)}</p>
+        <span class="card-open">${url ? "열어 보기 →" : "준비 중"}</span>`;
+      return url
+        ? `<a class="card" href="${esc(url)}" target="_blank" rel="noopener" style="${style}">${inner}</a>`
+        : `<div class="card is-empty" style="${style}">${inner}</div>`;
+    })
+    .join("");
 
-  function renderHearts() {
-    heartsEl.innerHTML = Object.entries(HEARTS)
-      .map(([key, h]) => {
-        const count = APPS.filter((a) => a.heart.includes(key)).length;
-        return `
-          <button class="heart ${active === key ? "is-active" : ""}" data-key="${key}" style="--c:${h.color}">
-            <span class="heart-emoji">${h.emoji}</span>
-            <span class="heart-label">${esc(h.label)}</span>
-            <span class="heart-full">${esc(h.full)} · ${count}개</span>
-          </button>`;
-      })
-      .join("");
+  /* ---------- 🌱 3초 꾹 → 관리자 ---------- */
+  const sprout = document.getElementById("sprout");
+  const HOLD = 3000;
+  let timer = null;
+
+  const goAdmin = () => { location.href = "admin.html"; };
+
+  function start(e) {
+    e.preventDefault();
+    sprout.classList.add("is-holding");
+    timer = setTimeout(() => {
+      stop();
+      if (PinGate.isOpen()) goAdmin();
+      else PinGate.open({ onSuccess: goAdmin });
+    }, HOLD);
+  }
+  function stop() {
+    clearTimeout(timer);
+    timer = null;
+    sprout.classList.remove("is-holding");
   }
 
-  function renderGrid() {
-    const list = active ? APPS.filter((a) => a.heart.includes(active)) : APPS;
-    labelEl.textContent = active
-      ? `${HEARTS[active].emoji} '${HEARTS[active].label}' 마음을 키우는 앱이에요. 꽃을 한 번 더 누르면 전체가 보여요.`
-      : defaultLabel;
-
-    gridEl.innerHTML = list
-      .map((a, i) => {
-        const main = HEARTS[a.heart[0]];
-        const tags = a.heart
-          .map((k) => `<span class="tag" style="--c:${HEARTS[k].color}">${HEARTS[k].emoji} ${esc(HEARTS[k].label)}</span>`)
-          .join("");
-        return `
-          <a class="card" href="${esc(a.url)}" target="_blank" rel="noopener" style="--c:${main.color}; --d:${i * 60}ms">
-            <span class="card-emoji">${esc(a.emoji)}</span>
-            <h3 class="card-name">${esc(a.name)}</h3>
-            <p class="card-desc">${esc(a.desc)}</p>
-            <div class="card-tags">${tags}</div>
-            <dl class="card-meta">
-              ${a.grade ? `<div><dt>대상</dt><dd>${esc(a.grade)}</dd></div>` : ""}
-              ${a.scene ? `<div><dt>장면</dt><dd>${esc(a.scene)}</dd></div>` : ""}
-              ${a.maker ? `<div><dt>제작</dt><dd>${esc(a.maker)}</dd></div>` : ""}
-            </dl>
-            <span class="card-open">열어 보기 →</span>
-          </a>`;
-      })
-      .join("");
-  }
-
-  heartsEl.addEventListener("click", (e) => {
-    const btn = e.target.closest(".heart");
-    if (!btn) return;
-    active = active === btn.dataset.key ? null : btn.dataset.key;
-    renderHearts();
-    renderGrid();
-    document.getElementById("apps").scrollIntoView({ behavior: "smooth" });
-  });
-
-  renderHearts();
-  renderGrid();
+  sprout.addEventListener("pointerdown", start);
+  ["pointerup", "pointerleave", "pointercancel"].forEach((t) => sprout.addEventListener(t, stop));
+  sprout.addEventListener("contextmenu", (e) => e.preventDefault());
 })();
